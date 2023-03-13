@@ -1,7 +1,7 @@
 import PlayButton from "./PlayButton";
 import Video from "./Video";
 
-function VideoList({videoState, deleteProp, editProp}){
+function VideoList({videoState, dispatch, editProp}){
 
     return(
       <>
@@ -15,7 +15,7 @@ function VideoList({videoState, deleteProp, editProp}){
             time={Videos.time}
             verified={Videos.verified}
             id={Videos.id}
-            deletePro={deleteProp}
+            dispatch={dispatch}
             edit={editProp}
 
           >

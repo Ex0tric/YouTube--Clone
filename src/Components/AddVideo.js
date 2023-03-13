@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function AddVideo({addProp, editableState, update}) {
+function AddVideo({dispatch, editableState}) {
 
     function initialState(){
         return {
@@ -22,7 +22,7 @@ function AddVideo({addProp, editableState, update}) {
     function handleSubmit(event){
         event.stopPropagation();
         event.preventDefault();
-        editableState ? update(read) : addProp(read);
+        editableState ? dispatch({type: 'UPDATE', payload: read}) : dispatch({type: 'ADD', payload: read});
         setRead(initialState());
 
     }

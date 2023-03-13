@@ -1,34 +1,37 @@
 import "./App.css";
 import DB from "./Data/Data";
-
 import AddVideo from "./Components/AddVideo";
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import VideoList from "./Components/VideoList";
 
 function App() {
   console.log('Rendering App');
 
-  const [video, setVideo] = useState(DB)
+  // const [video, setVideo] = useState(DB)
+
   const [ editVideo, SetEditVideo] = useState(null)
 
-  function add(addedVideo){
-    setVideo([...video, {...addedVideo, id: video.length}])
+  function videoReducer(video, action){
+    switch(action.type){
+      case 'ADD':
+        return [...video, {...action.payload, id: video.length}]
+      case 'DELETE':
+        return video.filter((video)=>action.payload !== video.id);
+      case 'UPDATE':
+        console.log(action.payload.id)
+        const index = video.findIndex(video=>video.id === action.payload.id)
+        let newVid = [...video]
+        newVid.splice(index,1,action.payload.id)
+        SetEditVideo(null);
+        return newVid;
+      default:
+        return video;
+    }
   }
-
-  function deleteVideo(id){
-    setVideo(video.filter((video)=>id !== video.id))
-  }
+  const [video, dispatch] = useReducer(videoReducer, DB)
 
   function edit(id){
     SetEditVideo(video.find(video=>video.id === id));
-  }
-
-  function update(vid){
-    console.log(vid.id)
-    const index = video.findIndex(video=>video.id === vid.id)
-    let newVid = [...video]
-    newVid.splice(index,1,vid)
-    setVideo(newVid);
   }
 
   return (
@@ -36,8 +39,8 @@ function App() {
       <div className="container mt-5">
         <div className="row">
           <div className="col">
-            <AddVideo addProp={add} editableState={editVideo} update={update}></AddVideo>
-            <VideoList deleteProp={deleteVideo} videoState={video} editProp={edit}></VideoList>
+            <AddVideo dispatch={dispatch} editableState={editVideo}></AddVideo>
+            <VideoList dispatch={dispatch} videoState={video} editProp={edit}></VideoList>
           </div>
         </div>
       </div>
